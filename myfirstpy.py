@@ -17,10 +17,10 @@ def fib(n):
 
 
 # 测试range函数
-str1=range(1,9)
+str1 = range(1, 9)
 print(str1.index(3))  # value=3的index为2
 
-str2=range(1,9,2)
+str2 = range(1, 9, 2)
 print(str2.index(3))  # value=3的index为1
 
 
@@ -58,45 +58,74 @@ print(set2 - set1)
 
 # enumerate枚举函数:字符串，列表，字典，set集合及元组
 str1 = 'xixibaishui'
-list1 = ['aa','bb','cc','dd','d','d','d']
+list1 = ['aa', 'bb', 'cc', 'dd', 'd', 'd', 'd']
 dict1 = {'name': 'Xixibaishui', 'job': 'IT', 'gender': 'male', 'age': 31}  # 默认只枚举字典的key
 
 # 字符串
 print('字符串--------------------------')
-for k,v in enumerate(str1):
-    print(k,v)
+for k, v in enumerate(str1):
+    print(k, v)
 
 # 列表
 print('列表--------------------------')
-for k,v in enumerate(list1):
-    print(k,v)
+for k, v in enumerate(list1):
+    print(k, v)
 
 # 字典(默认只枚举key)
 print('字典--------------------------')
-for k,v in enumerate(dict1):
-    print(k,v)
+for k, v in enumerate(dict1):
+    print(k, v)
 
-for k,v in enumerate(dict1.values()):
-    print(k,v)
+for k, v in enumerate(dict1.values()):
+    print(k, v)
 
 # set集合
 print('set集合--------------------------')
-for k,v in enumerate(set(str1)):
-    print(k,v)
-for k,v in enumerate(set(list1)):
-    print(k,v)
+for k, v in enumerate(set(str1)):
+    print(k, v)
+for k, v in enumerate(set(list1)):
+    print(k, v)
 
 # 元组
 print('元组--------------------------')
-for k,v in enumerate(tuple(str1)):
-    print(k,v)
+for k, v in enumerate(tuple(str1)):
+    print(k, v)
 
-for k,v in enumerate(tuple(list1)):
-    print(k,v)
+for k, v in enumerate(tuple(list1)):
+    print(k, v)
 
 # 20170529:十进制,八进制与十六进制
-int('0100'),int('0100',8),int('0100',16)  # int可把字符串转化为指定进制的数字
+int('0100'), int('0100', 8), int('0100', 16)  # int可把字符串转化为指定进制的数字
 
-"%o %x %X" % (64,64,255)  # 十进制数字转化为指定进制
+"%o %x %X" % (64, 64, 255)  # 十进制数字转化为指定进制
 # 小数类型 from decimal import Decimal
 
+# 20170531
+# 类型属于以对象而非变量
+# 共享引用和在原处修改:列表/字典等在原处修改不仅仅修改本身变量，其共享引用的变量也会被修改
+# 如何破解：切片/copy/import copy
+
+
+# 字符串
+# 二进制转换为十进制1
+B = '1101'
+I = 0
+while B:
+    # I = I * 2 + (ord(B[0]) - ord('0'))
+    I = I * 2 + int(B[0])
+    print(I, B)
+    B = B[1:]
+print(I, B)
+
+# 二进制转换为十进制2
+B2 = '1101'
+I1 = 0
+I2 = I1
+while B2:
+    I2 = I2 + int(B2[-1]) * (2 ** I1)
+    print(I2)
+    I1 += 1
+    print(I1)
+    B2 = B2[:-1]
+    print(B2)
+print(I1, I2, B2)
