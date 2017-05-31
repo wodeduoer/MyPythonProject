@@ -93,3 +93,10 @@ for k,v in enumerate(tuple(str1)):
 
 for k,v in enumerate(tuple(list1)):
     print(k,v)
+
+# 20170529:十进制,八进制与十六进制
+int('0100'),int('0100',8),int('0100',16)  # int可把字符串转化为指定进制的数字
+
+"%o %x %X" % (64,64,255)  # 十进制数字转化为指定进制
+# 小数类型 from decimal import Decimal
+
