@@ -23,7 +23,6 @@ print(str1.index(3))  # value=3的index为2
 str2 = range(1, 9, 2)
 print(str2.index(3))  # value=3的index为1
 
-
 # sort dictionary
 D = dict(name='xixibaishui', job='IT', gender='male', age=31)
 for x in D.keys():
@@ -97,7 +96,7 @@ for k, v in enumerate(tuple(list1)):
 # 20170529:十进制,八进制与十六进制
 int('0100'), int('0100', 8), int('0100', 16)  # int可把字符串转化为指定进制的数字
 
-"%o %x %X" % (64, 64, 255)  # 十进制数字转化为指定进制
+print("%o %x %X" % (64, 64, 255))  # 十进制数字转化为指定进制
 # 小数类型 from decimal import Decimal
 
 # 20170531
@@ -129,3 +128,42 @@ while B2:
     B2 = B2[:-1]
     print(B2)
 print(I1, I2, B2)
+
+# 20170601:jinzi:元组:本身不含方法，可通过列表对其排序
+t1 = 'efg', 'cd', 'ab'
+tmp = list(t1)
+tmp.sort()
+t1 = tuple(tmp)
+print(t1)
+
+# 元组的列表解析list comprehension
+t2 = (1, 4, 7, 2, 5, 8)
+list2 = [x ** 2 + x for x in t2]
+d3 = {x: x ** 2 + x for x in t2}
+t3 = (x ** 2 + x for x in t2)
+print('列表====>', list2)
+print('字典====>', d3)
+print('元组====>', t3)
+# 列表====> [2, 20, 56, 6, 30, 72]
+# 字典====> {1: 2, 4: 20, 7: 56, 2: 6, 5: 30, 8: 72}
+# 元组====> <generator object <genexpr> at 0x00000148DA6C6938>
+
+# 为何元组未成功解析？经查询，原因为：generator comprehension
+t4 = tuple(x ** 2 + x for x in t2)  # 列表解析的结果默认都是列表，所以需使用tuple转换之
+print('元组2====>', t4)
+
+"""
+列表解析是名副其实的序列操作--它们总会创建新的列表，但也可以用于遍历包括元组、字符串以及其他列表在内的任何序列对象。
+列表解析甚至可以用在某些实际并非储存的序列之上--任何可遍历的对象都可以，包括可自动逐行读取的文件
+"""
+
+# 交互
+while True:
+    reply = input('Enter whatever you want:')
+    if reply == 'stop':
+        break
+    elif not reply.isdigit():
+        print('What you enter [', reply, ' ] is not digit,please reEnter')
+    else:
+        print(int(reply) ** 2)
+print('Bye')
