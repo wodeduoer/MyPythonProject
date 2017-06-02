@@ -167,3 +167,41 @@ while True:
     else:
         print(int(reply) ** 2)
 print('Bye')
+
+# 20170602 循环
+# 同一个结果的不同循环形式
+# 1:while
+x = 'spam'
+while x:
+    print('while=====>', x)
+    x = x[1:]
+
+# 2 for
+x = 'spam'
+for y in range(4):
+    print('for=====>', x[y:])
+
+# 根据输入的数字判断是否是质数
+list3 = []
+
+while True:
+    is_prime = input('Enter your num,so we can judge whether it\'s a prime\n')
+    if not is_prime.isdigit():
+        print('What you Enter is not a digit,reenter please!')
+    else:
+        break
+
+xx = int(is_prime) // 2
+while xx > 1:
+    if int(is_prime) % xx == 0:
+        print(is_prime, 'has the factor ', xx)
+        list3.append(xx)
+    xx -= 1
+
+if len(list3) > 0:
+    print(is_prime, 'has factors as follows:', list3)
+else:
+    print(is_prime, ' is a prime')
+
+# 注意while中的else:除非while与else间含break，否则无论while执行几遍(即使0遍)，else部分也会执行
+
