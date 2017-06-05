@@ -205,3 +205,51 @@ else:
 
 # 注意while中的else:除非while与else间含break，否则无论while执行几遍(即使0遍)，else部分也会执行
 
+# 20170605：循环总结
+"""
+循环大致分为:while循环,for循环,迭代,列表解析等
+1:while循环
+while <test>:
+    statement1
+else:
+    statement2
+其中，
+else语句是可选的；
+若statement语句中含break,则会直接跳出while循环，且不会执行else语句，否则一定会执行else语句；
+continue：跳至最近循环所在的开头(即不再执行此次循环的后续语句)
+pass:什么都不做，只是空占位语句
+
+
+2:for循环
+同while一样，可遍历任何有序的序列对象内的元素(字符串，列表，元组，其他内置可迭代对象等)
+
+
+3:迭代
+for循环，列表解析，in成员关系测试及map内置函数等:可迭代对象包括实际序列及按需求而计算的虚拟序列
+文件迭代器：next()
+对象内置迭代器：如字典等，含内置迭代器
+map，zip，range等内置函数（其中range可实现非完备遍历）
+sorted,sum,any,all,list,tuple,''.join等内置工具
+用户自定义迭代器
+并行遍历：zip和map可实现并行遍历
+enumerate:偏移与元素兼得
+
+
+4:列表解析
+虽然结果可能与for循环语句等相同，但列表解析却是创建了新的列表对象(若原始列表有多个引用值)
+语句简明，且比手工的for循环等要快，效率更高
+另，列表解析可扩展为多个for循环且每个for循环均可添加if判断语句
+
+"""
+
+
+# 20170605 函数
+def intersect(seq1, seq2):
+    ret = []
+    for x in seq1:
+        if x in seq2:
+            ret.append(x)
+    return ret
+
+print(intersect('asdf','fghj'))
+print(intersect('12345','54321'))
