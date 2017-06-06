@@ -25,5 +25,5 @@ def global3():
 
 def test():
     print(var)
-    local();global1();global2();global3()
+    local(); global1(); global2(); global3()
     print(var)
