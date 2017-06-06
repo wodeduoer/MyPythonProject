@@ -1,7 +1,7 @@
 """"
 docstring
 """
-
+import sys
 
 def fib(n):
     a, b, c = 0, 1, 0
@@ -253,3 +253,86 @@ def intersect(seq1, seq2):
 
 print(intersect('asdf','fghj'))
 print(intersect('12345','54321'))
+
+
+# 20170606:jinzi:python关键字:import keyword;keyword.kwlist:列表
+# import keyword
+# for x,y in enumerate(keyword.kwlist):
+#     print('Num ', x + 1, '==>', y)
+
+# 20170606 作用域与参数
+# sys.modules背景
+# for x in sys.modules:  # sys.modules是一个dict
+#     print(x, '=====>', sys.modules[x])
+
+# part1:通过import ThisMod，测试各类访问全局变量的方法:
+# 1 直接声明global;2 import自身;3 import sys，然后赋值sys.modules[modules_name]给变量
+import ThisMod
+ThisMod.test()
+print(ThisMod.var)
+
+
+# part2:作用域与嵌套函数：嵌套作用域
+def f1():
+    x = 123
+
+    def f2():
+        print(x)
+    f2()    # 此处f1直接调用f2
+# 若在此处调用f1，f1会调用f2，从而直接打印出x的值
+
+
+def f1():
+    x = 123
+
+    def f2():
+        print(x)
+    return f2   # 此处f1返回f2而非直接调用
+# 若在此处调用f1，f1会返回f2，必须再次调用才会打印出x的值：即f1()()
+
+
+# part3:工厂函数:一个能记住嵌套作用域的值的函数，尽管那个作用域或许已不存在
+def maker(m):
+
+    def action(n):
+        print(n ** m)
+    return action   # 返回嵌套的函数却不调用此函数
+
+f = maker(2)    # 赋值m=2
+f(3);f(5);f(7)  # 分别传参3,5,7给嵌套函数action:此函数已记住m=2
+
+g = maker(3)    # 赋值m=2
+g(3);g(5);g(7)  # 分别传参3,5,7给嵌套函数action:此函数已记住m=3
+
+
+# part4:默认参数
+# 默认传值给嵌套的函数：def f2(x=x)
+# 但仍尽量避免使用嵌套函数，或拆分嵌套函数
+
+
+# part5 嵌套作用域与lambda
+# lambda:匿名函数/行表达式函数
+# 1 python lambda会创建一个函数对象，但不会把这个函数对象赋给一个标识符，而def则会把函数对象赋值给一个变量。
+# 2 python lambda它只是一个表达式，而def则是一个语句。
+
+# 若def或lambda嵌套在一个循环中，且引嵌套引用了上层作用域的变量，变量被循环所改变，在这个循环中产生的函数均会有相同的值：最后一次循环完成时引用变量的值
+def func1():
+    list4 = []
+    for i in range(5):
+        list4.append(lambda x:i ** x)
+    return list4
+
+ff = func1()    # 赋值给ff,同时传值ff.x=2
+for i in range(5):
+    print(i, '==>', ff[i](2))   # 注意此处的格式：ff[i](2):赋值的2是在最后的
+# 结果：所有的节点的值均为引用最后一次循环的变量的值
+# 如何破解？lambda中传值默认参数即可:list4.append(lambda x, i=i:i ** x)
+
+# 或者,map+lambda破之
+def func2(times):
+    map1 = map(lambda x:x ** times,range(5))    # 破之
+    return map1
+
+for x in func2(3):
+    print(x)
+
