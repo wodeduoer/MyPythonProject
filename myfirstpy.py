@@ -260,10 +260,25 @@ print(intersect('12345','54321'))
 # for x,y in enumerate(keyword.kwlist):
 #     print('Num ', x + 1, '==>', y)
 
+
+
 # 20170606 作用域与参数
 # sys.modules背景
 # for x in sys.modules:  # sys.modules是一个dict
 #     print(x, '=====>', sys.modules[x])
+
+"""
+变量名解析规则：LEGB 本地->函数内->全局->内置，其中内置作用域可通过import __builtin__可看
+
+最小化全局变量：函数内声明全局变量会导致变量值的不可控，因为变量值取决于函数调用的顺序，而函数是任意顺序排列的，这样就会引起程序调试困难
+
+最小化文件修改：一个模块一旦被导入，其全局变量就变成了此模块的属性，导入者自动获得了被导入模块的所有全局变量的访问权，
+    此时若变更其属性(如赋值等操作)，实际上就是修改了被导入模块的全局变量，而其他人在维护被导入模块时，根本不会知晓会有其它地方修改了其全局变量
+
+其它访问全局变量的方法：见part1:“ThisMod”
+
+作用域与嵌套函数：见part2/part3
+"""
 
 # part1:通过import ThisMod，测试各类访问全局变量的方法:
 # 1 直接声明global;2 import自身;3 import sys，然后赋值sys.modules[modules_name]给变量
@@ -289,6 +304,7 @@ def f1():
         print(x)
     return f2   # 此处f1返回f2而非直接调用
 # 若在此处调用f1，f1会返回f2，必须再次调用才会打印出x的值：即f1()()
+
 
 
 # part3:工厂函数:一个能记住嵌套作用域的值的函数，尽管那个作用域或许已不存在
@@ -335,4 +351,88 @@ def func2(times):
 
 for x in func2(3):
     print(x)
+
+
+# 20170607:传递参数
+# 参数的传递是通过自动将对象赋值给本地变量来实现的
+# 在函数内部的参数名的赋值不会影响调用者
+# 改变函数的可变对象参数的值也许会对调用者有影响：譬如有些参数涉及共享引用，此时应注意拷贝传参等
+
+# part1:特定的参数匹配模型：
+# 位置：从左至右进行匹配
+# 关键字参数：通过参数名进行匹配
+# 默认参数：为没有传入值的参数定义默认值
+# 可变参数：分为函数定义参数和调用传参两类：
+#       1 函数定义：收集任意多基于位置或关键字的参数
+#       2 调用传以参：传递任意多基于位置或关键字的参数
+
+
+# 任意参数实例： *对应元组，**对应字典
+arg1 = (1, 3, 2, 4)
+arg2 = {'a': 1, 'b': 2, 'c': 3, 'd': 4}
+
+
+def f(a, *b, **c):  # 参数顺序：元组必须在字典前？？？
+    print(a,b,c)
+
+f(0, *arg1, *arg2)
+f(*arg1, **arg2)
+f(**arg2)   # 为何不能成功调用
+# 注意以下情况
+f(*arg1)                # 1 (3, 2, 4) {}:此处把1补充给了x,剩余的值给了y
+f(0, 0, *arg1, **arg2)  # 0 (0, 1, 3, 2, 4) {'a': 1, 'b': 2, 'c': 3, 'd': 4}:把第2个0并入了y
+f(*arg1, 0, *arg1, 0)    # 1 (3, 2, 4, 0, 1, 3, 2, 4, 0) {}:注意(！！！)查看结果
+# f(*arg1, 0, *arg1, **arg2,0)  #但**后是不能再接一般参数的(SyntaxError: positional argument follows keyword argument unpacking)
+f(*arg1, 0, *arg1, *arg2, 0, **arg2, **{'e':5}) # 1 (3, 2, 4, 0, 1, 3, 2, 4, 'a', 'b', 'c', 'd', 0) {'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5}
+
+"""
+参数匹配细节：
+若使用并法例特定的参数匹配模型，Python遵循以下顺序法则
+1:在函数调用中，所有的非关键字参数(name)必须首先出现，其后跟随所有的关系字参数(name=value)，
+    后面跟*name的形式，如果有需要的话，最后是**name
+2:在函数头部，参数必须以相同的顺序出现：一般参数，默认参数，*name，**name
+
+Python内部按以下步骤在赋值前进行参数匹配：
+1:通过位置分配非关键字参数
+2:通过匹配变量名分配关键字参数
+3:其他额外的非关键字参数分配到*name元组中
+4:其他额外ide关键字分配到**name字典中
+5:用默认值分配给在头部未得到分配的参数
+"""
+
+
+# part2:处理可变参数，以取得最小参数为例 min1,min2,min3
+def min1(*args):
+    res = args[0]
+    for arg in args[1:]:
+        if arg < res:
+            res = arg
+    return res
+
+
+def min2(first, *rest): # 注意：此处为两个参数，第1个相当于min1中的args[0]，第2个相当于args[1:]
+    for arg in rest:
+        if arg < first:
+            first =arg
+    return first
+
+
+def min3(*args):
+    tmp = list(args)    # 直接把元组参数转为List，然后使用了list的sort函数
+    tmp.sort()
+    return tmp[0]
+
+
+# 更进一步，把min,max函数作为一个参数传给函数
+def minmax(min_max, *args):
+    tmp = args[0]
+    for arg in args[1:]:
+        if not min_max(tmp,arg):    # 或者：if min_max(arg,tmp):
+            tmp = arg
+    return tmp
+
+
+def min_x(x, y):return x < y
+def max_x(x, y):return x > y
+
 
