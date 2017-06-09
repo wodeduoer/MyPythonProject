@@ -436,3 +436,45 @@ def min_x(x, y):return x < y
 def max_x(x, y):return x > y
 
 
+# 20170608:函数的高级话题
+# 1:匿名函数lambda ：lambda argument1,argument2,...,argumentN:expressions using arguments
+lam1 = (lambda x='hi ', y='i\'m ', z='lambda':x + y + z)    # lambda语句中可有默认值
+lam1()  # hi i'm lambda
+lam1('hello')   # hello i'm lambda
+# lambda的功能总可以使用def来替换，但lambda直到了函数速写的作用，可使执行代码更简洁；lambda是表达式而非语句，故可用在不能使用def的地方(如列表解析等)
+
+# lambda嵌套和作用域：lambda能获得任意上层lambda变量：但要尽量避免嵌套!!!!!!
+action1 = (lambda x:(lambda y: x ** y)) # 1层嵌套
+action1(2)(3)   # 2 ** 3 =8
+
+action2 = (lambda x:(lambda y:(lambda z: x * (z + y))))     # 2层嵌套
+action2(2)(3)(4)    # 2 * (3 + 4) =14
+
+
+# 2:作为参数来应用函数：apply函数：apply(func,args):即预先并不清楚func可能的参数数量,故apply第2个参数为func的参数元组
+# apply执行单个函数的调用，把参数传入该函数，只进行一次。而map会替序列中每个元素都调用函数，进行多次
+# apply函数在Python3已取消了
+
+
+# 3:在序列中映射函数：map：仍保留在Python3.5中
+# map(func, seq):其中，func可被lambda替换
+
+
+# 4:函数式编程工具：filter和reduce:filter仍在用，reduce已取消
+filter((lambda x:x > 0),range(-5,5))  # 从(-5,-4,-3,-2,-1,0,1,2,3,4)中滤出>0的元素
+# reduce((lambda x,y:x + y),[1,2,3,4])  # 累加列表元素
+# reduce((lambda x,y:x * y),[1,2,3,4])  # 累乘列表元素
+
+
+# 5:重访列表解析：映射
+# [x ** 2 for x in range(10) if x % 2 ==0]
+# for xxxx in map((lambda xxx: xxx ** 2), filter((lambda xxx: xxx % 2 == 0), range(10))):
+#     print(xxxx)
+
+# 6:增加测试和嵌套循环
+# 7:列表解析和矩阵
+# 8:重访迭代器：生成器
+# 9:函数设计概念
+# 10:函数陷阱
+
+
