@@ -15,3 +15,24 @@ print(reduce(lambda x, y: x + y,foo))
 #测试先通过filter()过滤，然后映射或累积:
 #print(reduce(filter(lambda x: x % 3 ==0,foo), foo))  ##TypeError: 'filter' object is not callable
 
+
+def func1():
+    list4 = []
+    for i in range(5):
+        list4.append(lambda x:i ** x)
+    return list4
+
+ff = func1()    # 赋值给ff,同时传值ff.x=2
+for i in range(5):
+    print(i, '==>', ff[i](2))
+
+
+def func2():
+    list4 = []
+    for i in range(5):
+        list4.append(lambda x,i=i:i ** x)
+    return list4
+
+ff2 = func2()    # 赋值给ff,同时传值ff.x=2
+for i in range(5):
+    print(i, '==>', ff2[i](2))
